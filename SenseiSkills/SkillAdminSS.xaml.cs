@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using Buddy.BladeAndSoul.Game;
+using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SenseiSkills;
@@ -31,17 +32,20 @@ namespace TestBuddy
 
             InitializeComponent();
 
-           
-
-            String skillData = Helper.readFromFile();
-            skillList = ((JArray)JsonConvert.DeserializeObject(skillData)).ToObject< List < SkillInfo >  >();
 
 
-            Log.Info("Loaded " + skillList.Count + " Skill Definition");
+            String profileData = Helper.readFromFile();
+
+            SenseiProfile profile = ((JObject)JsonConvert.DeserializeObject(profileData)).ToObject<SenseiProfile>();
+
+            Log.Info("Loaded " + profile.skillList.Count + " Skill Definition");
+
+            skillList = profile.skillList;
+            rangedClass.IsChecked = profile.rangedClass;
+            minCast.Text = profile.minCastTime.ToString();
 
 
-
-            TreeViewItem root  = new TreeViewItem();
+            TreeViewItem root = new TreeViewItem();
             root.Header = "Skill List";
             root.IsExpanded = true;
 
@@ -67,7 +71,7 @@ namespace TestBuddy
                 ccBreak.Items.Add(skillTr);
 
             }
-          
+
 
             TreeViewItem dps = new TreeViewItem();
             dps.Header = "DPS";
@@ -92,11 +96,24 @@ namespace TestBuddy
 
             }
 
+            TreeViewItem evadeSkills = new TreeViewItem();
+            evadeSkills.Header = "EVADE";
+            evadeSkills.IsExpanded = true;
+
+
+            foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.EVADE)).ToList())
+            {
+                SkillInfoTree skillTr = addLeaf(skill);
+                evadeSkills.Items.Add(skillTr);
+
+            }
+
             root.Items.Add(gapClose);
             root.Items.Add(ccBreak);
             root.Items.Add(dps);
             root.Items.Add(defaulSkills);
-            
+            root.Items.Add(evadeSkills);
+
             skillTree.Items.Add(root);
 
 
@@ -112,58 +129,74 @@ namespace TestBuddy
             skillList = new List<SkillInfo>();
 
 
-           TreeViewItem root= (TreeViewItem) skillTree.Items.GetItemAt(0);
+            TreeViewItem root = (TreeViewItem)skillTree.Items.GetItemAt(0);
 
 
 
-           TreeViewItem gapClose = (TreeViewItem)root.Items.GetItemAt(0);
-        
-            foreach(SkillInfoTree itm in gapClose.Items)
+            TreeViewItem gapClose = (TreeViewItem)root.Items.GetItemAt(0);
+
+            foreach (SkillInfoTree itm in gapClose.Items)
             {
                 SkillInfo skill = addSkillCombo(itm);
                 skillList.Add(skill);
 
             }
 
-           TreeViewItem ccBreak = (TreeViewItem)root.Items.GetItemAt(1);
+            TreeViewItem ccBreak = (TreeViewItem)root.Items.GetItemAt(1);
 
-           foreach (SkillInfoTree itm in ccBreak.Items)
-           {
-               SkillInfo skill = addSkillCombo(itm);
-               skillList.Add(skill);
+            foreach (SkillInfoTree itm in ccBreak.Items)
+            {
+                SkillInfo skill = addSkillCombo(itm);
+                skillList.Add(skill);
 
-           }
+            }
 
-           TreeViewItem dps = (TreeViewItem)root.Items.GetItemAt(2);
-
-
-           foreach (SkillInfoTree itm in dps.Items)
-           {
-               SkillInfo skill = addSkillCombo(itm);
-               skillList.Add(skill);
-
-           }
-          
-
-           TreeViewItem defaulSkills = (TreeViewItem)root.Items.GetItemAt(3); ;
+            TreeViewItem dps = (TreeViewItem)root.Items.GetItemAt(2);
 
 
+            foreach (SkillInfoTree itm in dps.Items)
+            {
+                SkillInfo skill = addSkillCombo(itm);
+                skillList.Add(skill);
 
-           foreach (SkillInfoTree itm in defaulSkills.Items)
-           {
-               SkillInfo skill = addSkillCombo(itm);
-               skillList.Add(skill);
-
-           }
-          
+            }
 
 
+            TreeViewItem defaulSkills = (TreeViewItem)root.Items.GetItemAt(3); ;
+
+
+
+            foreach (SkillInfoTree itm in defaulSkills.Items)
+            {
+                SkillInfo skill = addSkillCombo(itm);
+                skillList.Add(skill);
+
+            }
+
+
+            TreeViewItem evadeSkills = (TreeViewItem)root.Items.GetItemAt(4); ;
+
+
+
+            foreach (SkillInfoTree itm in evadeSkills.Items)
+            {
+                SkillInfo skill = addSkillCombo(itm);
+                skillList.Add(skill);
+
+            }
 
 
 
             Log.Info("Saving " + skillList.Count + " Skill Definition");
-            String skillData = JsonConvert.SerializeObject(skillList, Formatting.Indented);
-            Helper.writeToFile(skillData);
+
+            SenseiProfile profile = new SenseiProfile();
+            profile.minCastTime = int.Parse(minCast.Text);
+            profile.rangedClass = (bool)rangedClass.IsChecked;
+            profile.skillList = skillList;
+
+
+            String profileData = JsonConvert.SerializeObject(profile, Formatting.Indented);
+            Helper.writeToFile(profileData);
 
         }
 
@@ -181,10 +214,10 @@ namespace TestBuddy
 
             return sk;
 
-        
+
         }
 
-        public SkillInfoTree addLeaf(SkillInfo skill) 
+        public SkillInfoTree addLeaf(SkillInfo skill)
         {
             SkillInfoTree skillTr = new SkillInfoTree();
             skillTr.Header = skill.skillName;
@@ -201,7 +234,7 @@ namespace TestBuddy
 
             }
             return skillTr;
-        
+
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -210,8 +243,8 @@ namespace TestBuddy
 
             SkillInfo newSkill = new SkillInfo();
             newSkill.skillName = sklname.Text;
-           
-            newSkill.ignoreSkillError =(bool) sklignore.IsChecked;
+
+            newSkill.ignoreSkillError = (bool)sklignore.IsChecked;
 
             if (skillTree.SelectedItem is SkillInfoTree)
             {
@@ -224,14 +257,14 @@ namespace TestBuddy
                 newSkill.type = getSkillType(((TreeViewItem)skillTree.SelectedItem).Header.ToString());
             }
 
-          
+
 
             SkillInfoTree skillTr = addLeaf(newSkill);
             skillTr.IsExpanded = true;
 
             currentNode.Items.Add(skillTr);
-                
-            
+
+
         }
 
 
@@ -245,6 +278,12 @@ namespace TestBuddy
                     return SkillType.CCBREAK;
                 case "DPS":
                     return SkillType.DPS;
+                case "EVADE":
+                    return SkillType.EVADE;
+                case "CC":
+                    return SkillType.CC;
+                case "HEAL":
+                    return SkillType.HEAL;
                 case "DEFAULT":
                     return SkillType.DEFAULT;
 
@@ -253,11 +292,11 @@ namespace TestBuddy
             return SkillType.DEFAULT;
         }
 
-       
+
 
         private void sklkey_TextChanged(object sender, TextChangedEventArgs e)
         {
-           
+
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -269,7 +308,7 @@ namespace TestBuddy
 
             TreeViewItem treeitem = parent as TreeViewItem;
 
-            
+
 
             int currentPos = treeitem.Items.IndexOf(currentNode);
 
@@ -277,7 +316,7 @@ namespace TestBuddy
 
             treeitem.Items.Remove(currentNode);
             treeitem.Items.Insert(currentPos - 1, currentNode);
-            
+
 
 
         }
@@ -308,8 +347,50 @@ namespace TestBuddy
             treeitem.Items.Remove(currentNode);
             treeitem.Items.Insert(currentPos + 1, currentNode);
         }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            Log.InfoFormat("Remove");
+            TreeViewItem currentNode = (TreeViewItem)skillTree.SelectedItem;
+
+            ItemsControl parent = GetSelectedTreeViewItemParent(currentNode);
+
+            TreeViewItem treeitem = parent as TreeViewItem;
+
+            Log.InfoFormat("Parent {0}, Node To Remove {1} ", treeitem.Header.ToString(), currentNode.Header.ToString());
+
+            treeitem.Items.Remove(currentNode);
+        }
+
+        private void button3_Click(object sender, RoutedEventArgs e)
+        {
+            dumpSkillsnActions();
+        }
+
+
+        public void dumpSkillsnActions()
+        {
+
+            Log.Info("Actions=====");
+            List<Buddy.BladeAndSoul.Game.Action> actions = GameManager.LocalPlayer.CurrentActions.ToList();
+
+            foreach (Buddy.BladeAndSoul.Game.Action action in actions)
+            {
+                Log.InfoFormat("Action {0}, Duration {1}", action.SkillName, action.Duration);
+
+            }
+
+
+            Log.Info("Skills=====");
+            List<Buddy.BladeAndSoul.Game.Skill> skills = GameManager.LocalPlayer.CurrentSkills.ToList();
+
+            foreach (Buddy.BladeAndSoul.Game.Skill skill in skills)
+            {
+                Log.InfoFormat("Skill {0}, Key {1}",skill.Name,skill.ShortcutKeyClassic);
+            }
+            Log.Info("Done=====");
+        }
+
+
     }
-
-
-
 }

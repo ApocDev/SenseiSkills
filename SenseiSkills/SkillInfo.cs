@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace SenseiSkills
 {
+    public class SenseiProfile
+    {
+        public bool rangedClass = false;
+        public int minCastTime = 200;
+        public List<SkillInfo> skillList = new List<SkillInfo>();
+    }
+
+
     public class SkillInfo
     {
         public String skillName;
@@ -29,7 +37,8 @@ namespace SenseiSkills
         CCBREAK,
         GAPCLOSER,
         DEFAULT,
-        HEAL
+        HEAL,
+        EVADE
     };
 
     static class CircularLinkedList
