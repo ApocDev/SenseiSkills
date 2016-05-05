@@ -124,28 +124,34 @@ namespace SenseiSkills
 
         public override async Task Combat()
         {
-           
-              
+
+            GameManager.LocalPlayer.Update();
+
+
+
               bool breakCC = false;
 
 
             Log.Info("Combat Called===============");
             
-            //GAP CLOSE
+            
             Actor target = null;
             try
             {
                 target = GameManager.LocalPlayer.CurrentTarget;
+
+                target.Update();
                 
                 Log.Info("Killing " + target.Name + " Dis:" + (target.Distance/50));
 
                 try { 
-                    List<Effect> effects = GameManager.LocalPlayer.Effects.ToList();
+                    List<Effect> effects = target.Effects.ToList();
+                    Log.Info("Target Effect count: " + effects.Count);
 
-                    foreach (Effect effect in effects.Where(i => i.BuffType.Equals(EffectBuffType.Debuff)).ToList())
+                    foreach (Effect effect in effects.ToList())
                     {
                         //do stuff with the debuffs
-                        Log.Info("Target Efect"+effects.Dump());
+                        Log.Info("Target Effect"+effect.Name +"==>"+effect.ToString());
                     }
                 }
                 catch (Exception ex)
@@ -171,7 +177,7 @@ namespace SenseiSkills
                 foreach (Effect effect in effects.Where(i => i.BuffType.Equals(EffectBuffType.Debuff)).ToList())
                 { 
                     //do stuff with the debuffs
-                    Log.Info(effects.Dump());
+                    Log.Info(effect.Dump());
                 }
 
             }
@@ -186,6 +192,7 @@ namespace SenseiSkills
 
             {
                 Log.Info("Try to Gap Close for range "+(target.Distance /50));
+                Log.Info("GAP CLOSER CANT:"+ skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList().Count);
                 foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList())
                 {
                     if (await ExecuteandChainSkill(skill,target))
@@ -273,7 +280,7 @@ namespace SenseiSkills
         {
             //dumpSkillsnActions();
             Keys hotkey = Keys.R;
-            int castDuration = 500;
+            int castDuration = 200;
             if (!ignoreState)
             {
                 //Log.Info("Cheking skill: " + skillName);
