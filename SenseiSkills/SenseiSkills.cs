@@ -184,7 +184,7 @@ namespace SenseiSkills
             catch (Exception ex)
             {
 
-                Log.Error("PROBLEM GETTING EFECTS = " + ex.Message);
+               // Log.Error("PROBLEM GETTING EFECTS = " + ex.Message);
             }
 
             
@@ -299,7 +299,7 @@ namespace SenseiSkills
                // Log.Info("Cast Duration " + skill.CastDuration);
 
                 Log.Warn(skillName + " CanCast result: " + castResult +"Range min:"+skill.MinRange +" Max:"+skill.MaxRange);
-                if (castResult != SkillUseError.None && castResult != SkillUseError.LinkFailed)
+                if (!(castResult <= SkillUseError.None) && castResult != SkillUseError.LinkFailed)
                     return false;
 
                 Log.Info("Verifying Range");
@@ -382,7 +382,7 @@ namespace SenseiSkills
                 var castResult = skill.ActorCanCastResult(GameManager.LocalPlayer);
                 Log.InfoFormat("SkillError {0} for skill {1}", castResult, skillName);
 
-                if (castResult == SkillUseError.None)
+                if (castResult <= SkillUseError.None )
                 {
                     Log.InfoFormat("Castable{0}", skillName);
                     return true;
