@@ -382,13 +382,15 @@ namespace SenseiSkills
                 var castResult = skill.ActorCanCastResult(GameManager.LocalPlayer);
                 Log.InfoFormat("SkillError {0} for skill {1}", castResult, skillName);
 
-                if (castResult <= SkillUseError.None )
+                if (castResult <= SkillUseError.None)
                 {
                     Log.InfoFormat("Castable{0}", skillName);
                     return true;
-                }
-                else
+                } else if (castResult == SkillUseError.StillOnGlobalRecycling)
+                {
                     await Coroutine.Sleep(100);
+                }
+                else { return false; }
 
             }
 
