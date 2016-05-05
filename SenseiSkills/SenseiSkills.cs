@@ -186,6 +186,7 @@ namespace SenseiSkills
 
             {
                 Log.Info("Try to Gap Close for range "+(target.Distance /50));
+                Log.Info("GAP CLOSER CANT:"+ skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList().Count);
                 foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList())
                 {
                     if (await ExecuteandChainSkill(skill,target))
@@ -273,7 +274,7 @@ namespace SenseiSkills
         {
             //dumpSkillsnActions();
             Keys hotkey = Keys.R;
-            int castDuration = 500;
+            int castDuration = 200;
             if (!ignoreState)
             {
                 //Log.Info("Cheking skill: " + skillName);

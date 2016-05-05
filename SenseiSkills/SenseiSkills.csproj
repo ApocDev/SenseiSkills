@@ -7,8 +7,8 @@
     <ProjectGuid>{81B760B9-4122-4C6D-98EC-C8BEC9008CB2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestBuddy</RootNamespace>
-    <AssemblyName>TestBuddy</AssemblyName>
+    <RootNamespace>SenseiSkills</RootNamespace>
+    <AssemblyName>SenseiSkills</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
