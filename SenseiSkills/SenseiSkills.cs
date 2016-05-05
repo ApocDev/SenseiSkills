@@ -252,10 +252,12 @@ namespace SenseiSkills
         {
             if (await ExecuteSkill(skill,target))
             {
+              
                 if (skill.chainSkill.Count > 0)
                 {
                     foreach (SkillInfo sk in skill.chainSkill)
                     {
+                        await waitGCD(sk.skillName);
                         Log.Info("Chaining " + sk.skillName + " after " + skill.skillName);
                         if (await ExecuteandChainSkill(sk))
                         {
@@ -300,6 +302,8 @@ namespace SenseiSkills
                 if (castResult != SkillUseError.None && castResult != SkillUseError.LinkFailed)
                     return false;
 
+                Log.Info("Verifying Range");
+
                 if (target != null && skill.MaxRange <(target.Distance/50) )
                 {
                     Log.Info("Outside of range");
@@ -315,6 +319,8 @@ namespace SenseiSkills
                     castDuration = skill.CastDuration;
                 }
 
+
+                Log.Info("Getting Key");
                 //Log.Info(skill.Name + " [" + skill.Id + "] " + " => " + skill.Alias);
                 var shortcutKey = skill.ShortcutKeyClassic;
                 //Log.Info("\t" + shortcutKey);
@@ -339,12 +345,54 @@ namespace SenseiSkills
             Log.Info("+++Casting " + skillName + " on key " + hotkey+" with sleep: "+castDuration);
             InputManager.PressKey(hotkey);
 
+            /*
             while (GameManager.LocalPlayer.IsCasting)
+            {
+                Log.InfoFormat("Waiting while casting {0}", GameManager.LocalPlayer.IsCasting);
                 await Coroutine.Sleep(100);
+            }*/
             
 
             await Coroutine.Sleep(castDuration);
             return true;
+        }
+
+        public async Task<bool>  waitGCD(string skillName)
+        {
+            var skill = GameManager.LocalPlayer.GetSkillByName(skillName);
+            if (skill == null)
+            {
+                Log.Info(skillName + " not available");
+                return false;
+                
+            }
+
+            int maxRetry = 0;
+
+            while (true)
+            {
+                Log.InfoFormat("Waiting for GCD {0}", skillName);
+
+                if (maxRetry >= 10)
+                {
+                    return false;
+                }
+                maxRetry++;
+
+                var castResult = skill.ActorCanCastResult(GameManager.LocalPlayer);
+                Log.InfoFormat("SkillError {0} for skill {1}", castResult, skillName);
+
+                if (castResult == SkillUseError.None)
+                {
+                    Log.InfoFormat("Castable{0}", skillName);
+                    return true;
+                }
+                else
+                    await Coroutine.Sleep(100);
+
+            }
+
+          
         }
 
         public void dumpSkillsnActions()
