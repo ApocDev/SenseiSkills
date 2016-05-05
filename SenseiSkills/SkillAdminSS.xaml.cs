@@ -162,7 +162,7 @@ namespace TestBuddy
 
 
             Log.Info("Saving " + skillList.Count + " Skill Definition");
-            String skillData = JsonConvert.SerializeObject(skillList);
+            String skillData = JsonConvert.SerializeObject(skillList, Formatting.Indented);
             Helper.writeToFile(skillData);
 
         }
@@ -257,7 +257,56 @@ namespace TestBuddy
 
         private void sklkey_TextChanged(object sender, TextChangedEventArgs e)
         {
+           
+        }
 
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            Log.InfoFormat("Moving UP");
+            TreeViewItem currentNode = (TreeViewItem)skillTree.SelectedItem;
+
+            ItemsControl parent = GetSelectedTreeViewItemParent(currentNode);
+
+            TreeViewItem treeitem = parent as TreeViewItem;
+
+            
+
+            int currentPos = treeitem.Items.IndexOf(currentNode);
+
+            Log.InfoFormat("Parent {0}, Node To Move {1} from Pos {2} to Pos {3}", treeitem.Header.ToString(), currentNode.Header.ToString(), currentPos, currentPos - 1);
+
+            treeitem.Items.Remove(currentNode);
+            treeitem.Items.Insert(currentPos - 1, currentNode);
+            
+
+
+        }
+
+        public ItemsControl GetSelectedTreeViewItemParent(TreeViewItem item)
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(item);
+            while (!(parent is TreeViewItem || parent is System.Windows.Controls.TreeView))
+            {
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+
+            return parent as ItemsControl;
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            Log.InfoFormat("Moving UP");
+            TreeViewItem currentNode = (TreeViewItem)skillTree.SelectedItem;
+
+            ItemsControl parent = GetSelectedTreeViewItemParent(currentNode);
+
+            TreeViewItem treeitem = parent as TreeViewItem;
+
+            int currentPos = treeitem.Items.IndexOf(currentNode);
+            Log.InfoFormat("Parent {0}, Node To Move {1} from Pos {2} to Pos {3}", treeitem.Header.ToString(), currentNode.Header.ToString(), currentPos, currentPos + 1);
+
+            treeitem.Items.Remove(currentNode);
+            treeitem.Items.Insert(currentPos + 1, currentNode);
         }
     }
 

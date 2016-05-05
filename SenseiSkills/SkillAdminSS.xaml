@@ -16,6 +16,8 @@
         </CheckBox>
         <Label x:Name="label" Content="Skill Name" HorizontalAlignment="Left" Margin="8,214,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label2" Content="SkillError" HorizontalAlignment="Left" Margin="215,218,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="button" Content="UP" HorizontalAlignment="Left" Margin="329,225,0,0" VerticalAlignment="Top" Width="76" Click="button_Click"/>
+        <Button x:Name="button1" Content="Down" HorizontalAlignment="Left" Margin="426,225,0,0" VerticalAlignment="Top" Width="74" RenderTransformOrigin="0.08,-0.625" Click="button1_Click"/>
 
     </Grid>
 </UserControl>
