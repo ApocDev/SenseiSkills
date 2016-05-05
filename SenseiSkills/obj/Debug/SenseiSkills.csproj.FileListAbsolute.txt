@@ -1,5 +1,0 @@
-C:\Users\romeroej\Dropbox\BnSStuff\buddy\Routines\SenseiSkills\SenseiSkills\obj\Debug\SenseiSkills.csprojResolveAssemblyReference.cache
-C:\Users\romeroej\Dropbox\BnSStuff\buddy\Routines\SenseiSkills\SenseiSkills\obj\Debug\SkillAdmin.baml
-C:\Users\romeroej\Dropbox\BnSStuff\buddy\Routines\SenseiSkills\SenseiSkills\obj\Debug\SkillAdmin.g.cs
-C:\Users\romeroej\Dropbox\BnSStuff\buddy\Routines\SenseiSkills\SenseiSkills\obj\Debug\TestBuddy_MarkupCompile.cache
-C:\Users\romeroej\Dropbox\BnSStuff\buddy\Routines\SenseiSkills\SenseiSkills\obj\Debug\TestBuddy.g.resources
