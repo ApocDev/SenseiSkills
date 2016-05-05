@@ -14,11 +14,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using TestBuddy;
+
 
 namespace SenseiSkills
 {
-    public class SenseiSkills : CombatRoutineBase, IUIButtonProvider
+    public class SenseiSkillsDLL : CombatRoutineBase, IUIButtonProvider
     {
 
         public string ButtonText

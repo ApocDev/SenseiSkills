@@ -1,0 +1,85 @@
+{
+  "rangedClass": true,
+  "minCastTime": 200,
+  "skillList": [
+    {
+      "skillName": "Blazing Palm",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 3
+    },
+    {
+      "skillName": "Dragonchar",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 0
+    },
+    {
+      "skillName": "Dragonwhorl",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 0
+    },
+    {
+      "skillName": "Short Fuse",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 0
+    },
+    {
+      "skillName": "Phantom Grip",
+      "ignoreSkillError": false,
+      "chainSkill": [
+        {
+          "skillName": "Blazing Wall",
+          "ignoreSkillError": false,
+          "chainSkill": [],
+          "type": 0
+        },
+        {
+          "skillName": "Blazing Wall",
+          "ignoreSkillError": false,
+          "chainSkill": [],
+          "type": 0
+        }
+      ],
+      "type": 0
+    },
+    {
+      "skillName": "Bolt Bash",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 0
+    },
+    {
+      "skillName": "Phantom Push",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 0
+    },
+    {
+      "skillName": "Blazing Wall",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 0
+    },
+    {
+      "skillName": "Frost Palm",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 0
+    },
+    {
+      "skillName": "Blazing Palm",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 4
+    },
+    {
+      "skillName": "Backstep",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "type": 6
+    }
+  ]
+}

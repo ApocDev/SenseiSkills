@@ -2,7 +2,6 @@
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SenseiSkills;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TestBuddy
+namespace SenseiSkills
 {
     /// <summary>
     /// Interaction logic for SkillAdmin.xaml
