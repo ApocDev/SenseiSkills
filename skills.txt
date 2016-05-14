@@ -1,9 +1,13 @@
 {
   "rangedClass": true,
   "attackTarget": true,
-  "minCastTime": 200,
+  "minCastTime": 400,
   "evadeRange": 5,
   "gapCloseRange": 16,
+  "potKey": "6",
+  "potUsePct": 35,
+  "dumplingKey": "5",
+  "dumplingUsePct": 20,
   "skillList": [
     {
       "type": 7,
@@ -26,6 +30,19 @@
       "condition": {
         "type": 0,
         "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Frost Fury",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 7,
+        "conditionName": "9",
         "stackCount": 0,
         "conditionAmount": 0,
         "conditionSelf": false
@@ -65,6 +82,19 @@
       "condition": {
         "type": 0,
         "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Inferno",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 7,
+        "conditionName": "10",
         "stackCount": 0,
         "conditionAmount": 0,
         "conditionSelf": false

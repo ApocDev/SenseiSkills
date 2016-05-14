@@ -13,6 +13,13 @@ namespace SenseiSkills
         public int minCastTime = 200;
         public int evadeRange = 5;
         public int gapCloseRange = 16;
+
+        public String potKey="6";
+        public String dumplingKey = "5";
+        public int potUsePct = 20;
+        public int dumplingUsePct=20;
+
+
         public List<SkillInfo> skillList = new List<SkillInfo>();
     }
 
