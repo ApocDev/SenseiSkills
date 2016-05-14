@@ -1,0 +1,192 @@
+{
+  "rangedClass": true,
+  "attackTarget": true,
+  "minCastTime": 200,
+  "evadeRange": 5,
+  "gapCloseRange": 16,
+  "skillList": [
+    {
+      "type": 7,
+      "skillName": "Blazing Palm",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 3,
+      "skillName": "Blazing Palm",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Bolt Bash",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Impact",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 3,
+        "conditionName": "Ember",
+        "stackCount": 4,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Dragonchar",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Dragonwhorl",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Short Fuse",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Phantom Grip",
+      "ignoreSkillError": false,
+      "chainSkill": [
+        {
+          "type": 0,
+          "skillName": "Blazing Wall",
+          "ignoreSkillError": false,
+          "chainSkill": [],
+          "condition": {
+            "type": 0,
+            "conditionName": "",
+            "stackCount": 0,
+            "conditionAmount": 0,
+            "conditionSelf": false
+          }
+        },
+        {
+          "type": 0,
+          "skillName": "Phantom Push",
+          "ignoreSkillError": false,
+          "chainSkill": [],
+          "condition": {
+            "type": 0,
+            "conditionName": "",
+            "stackCount": 0,
+            "conditionAmount": 0,
+            "conditionSelf": false
+          }
+        }
+      ],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Blazing Wall",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 7,
+        "conditionName": "10",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Frost Palm",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 4,
+      "skillName": "Blazing Palm",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 6,
+      "skillName": "Backstep",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    }
+  ]
+}

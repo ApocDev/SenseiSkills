@@ -8,11 +8,24 @@ namespace SenseiSkills
 {
     public class SenseiProfile
     {
-        public bool rangedClass = false;
+        public bool attackTarget = true;
+        public bool rangedClass = true;
         public int minCastTime = 200;
+        public int evadeRange = 5;
+        public int gapCloseRange = 16;
         public List<SkillInfo> skillList = new List<SkillInfo>();
     }
 
+
+    public class SkillCondition
+    {
+        public ConditionType type;
+        public String conditionName;
+        public int stackCount = 0;
+        public int conditionAmt = 0;
+        public bool conditionSelf = false;
+
+    }
 
     public class SkillInfo
     {
@@ -24,22 +37,40 @@ namespace SenseiSkills
         public List<SkillInfo> chainSkill = new List<SkillInfo>();
 
         public SkillType type;
+        public SkillCondition condition;
+        public bool selfSkill = false;
 
        
 
     }
+   
 
-
-    public enum SkillType
+    /*
+    public static SkillType getSkillType(String label)
     {
-        DPS,
-        CC,
-        CCBREAK,
-        GAPCLOSER,
-        DEFAULT,
-        HEAL,
-        EVADE
-    };
+        switch (label)
+        {
+            case "GAPCLOSER":
+                return SkillType.GAPCLOSER;
+            case "CCBREAK":
+                return SkillType.CCBREAK;
+            case "DPS":
+                return SkillType.DPS;
+            case "EVADE":
+                return SkillType.EVADE;
+            case "CC":
+                return SkillType.CC;
+            case "HEAL":
+                return SkillType.HEAL;
+            case "DEFAULT":
+                return SkillType.DEFAULT;
+
+        }
+
+        return SkillType.DEFAULT;
+    }*/
+
+   
 
     static class CircularLinkedList
     {
@@ -58,10 +89,5 @@ namespace SenseiSkills
         }
     }
 
-    static class GeneralSettings
-    {
-        public static int gcd = 100;
-        public static float gapCloseRange = 16;
     
-    }
 }
