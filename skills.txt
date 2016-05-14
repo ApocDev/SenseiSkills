@@ -7,7 +7,7 @@
   "potKey": "6",
   "potUsePct": 35,
   "dumplingKey": "5",
-  "dumplingUsePct": 20,
+  "dumplingUsePct": 30,
   "skillList": [
     {
       "type": 7,
@@ -30,6 +30,19 @@
       "condition": {
         "type": 0,
         "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 0,
+      "skillName": "Fire Fury",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 7,
+        "conditionName": "10",
         "stackCount": 0,
         "conditionAmount": 0,
         "conditionSelf": false

@@ -26,10 +26,10 @@ namespace SenseiSkills
 
         public static void writeToFile(String text)
         {
-            path = Path.Combine(AppSettings.Instance.FullRoutinesPath, "SenseiSkills",path);
+            path = Path.Combine(AppSettings.Instance.FullRoutinesPath, "SenseiSkills", path);
             Log.Info("Writing: " + path + " " + text);
             File.WriteAllText(path, text);
-                
+
         }
 
         private static ILog Log = LogManager.GetLogger("SenseiSkills");
@@ -44,8 +44,8 @@ namespace SenseiSkills
             return readText;
         }
 
-        
-        
+
+
         /*
         public static void treeToJson(System.Windows.Controls.TreeView skillTree)
         {
@@ -123,27 +123,27 @@ namespace SenseiSkills
 
         }*/
 
-        public static  ObservableCollection<ISkillLeaf> jsonToTree(SenseiProfile profile)
+        public static ObservableCollection<ISkillLeaf> jsonToTree(SenseiProfile profile)
         {
 
 
             ObservableCollection<ISkillLeaf> Skills = new ObservableCollection<ISkillLeaf>();
             Log.Info("Loaded " + profile.skillList.Count + " Skill Definition");
 
-           List<SkillInfo> skillList = profile.skillList;
+            List<SkillInfo> skillList = profile.skillList;
 
             //rangedClass.IsChecked = profile.rangedClass;
             //minCast.Text = profile.minCastTime.ToString();
 
 
-            SkillLeaf  root = new SkillLeaf();
+            SkillLeaf root = new SkillLeaf();
             root.skillName = "Skill List";
 
 
 
             SkillLeaf gapClose = new SkillLeaf();
             gapClose.skillName = "GAPCLOSER";
-          
+
 
             foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList())
             {
@@ -155,7 +155,7 @@ namespace SenseiSkills
 
             SkillLeaf ccBreak = new SkillLeaf();
             ccBreak.skillName = "CCBREAK";
-          
+
             foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.CCBREAK)).ToList())
             {
                 SkillLeaf skillTr = addLeaf(skill);
@@ -166,7 +166,7 @@ namespace SenseiSkills
 
             SkillLeaf dps = new SkillLeaf();
             dps.skillName = "DPS";
-          
+
             foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.DPS)).ToList())
             {
                 SkillLeaf skillTr = addLeaf(skill);
@@ -176,7 +176,7 @@ namespace SenseiSkills
 
             SkillLeaf defaulSkills = new SkillLeaf();
             defaulSkills.skillName = "DEFAULT";
-          
+
 
 
             foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.DEFAULT)).ToList())
@@ -188,7 +188,7 @@ namespace SenseiSkills
 
             SkillLeaf evadeSkills = new SkillLeaf();
             evadeSkills.skillName = "EVADE";
-            
+
 
 
             foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.EVADE)).ToList())
@@ -248,7 +248,7 @@ namespace SenseiSkills
             return skillTr;
 
         }
-        
+
 
         public static void dumpSkillsnActions()
         {
@@ -295,6 +295,14 @@ namespace SenseiSkills
                 return System.Windows.Forms.Keys.D3;
             if (key.Equals("4"))
                 return System.Windows.Forms.Keys.D4;
+            if (key.Equals("5"))
+                return System.Windows.Forms.Keys.D5;
+            if (key.Equals("6"))
+                return System.Windows.Forms.Keys.D6;
+            if (key.Equals("7"))
+                return System.Windows.Forms.Keys.D7;
+            if (key.Equals("8"))
+                return System.Windows.Forms.Keys.D8;
             if (key.Equals("R"))
                 return System.Windows.Forms.Keys.R;
             if (key.Equals("T"))
@@ -307,7 +315,7 @@ namespace SenseiSkills
     }
 
 
-  
+
 
 
 

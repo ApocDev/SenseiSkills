@@ -32,13 +32,13 @@ namespace SenseiSkills
     public class SenseiSkillsDLL : CombatRoutineBase, IUIButtonProvider
     {
 
-	
+
         public string ButtonText
         {
             get { return "Skill Sensei"; }
         }
 
-        
+
 
         public override void OnRegistered()
         {
@@ -76,7 +76,7 @@ namespace SenseiSkills
 
         public override async Task Heal()
         {
-
+            //Log.Info("Heal Called===============");
             await doLoot();
             await doDumpling();
 
@@ -113,7 +113,7 @@ namespace SenseiSkills
                 catch (Exception ex)
                 {
 
-                      //Log.Error("NO TARGET FOUND (pull)= " + ex.Message);
+                    //Log.Error("NO TARGET FOUND (pull)= " + ex.Message);
                     return;
                 }
             }
@@ -127,7 +127,7 @@ namespace SenseiSkills
         /// 
 
 
-        public List<Effect> getNpcEffects(Actor target,  List<Effect> targetEffects)
+        public List<Effect> getNpcEffects(Actor target, List<Effect> targetEffects)
         {
 
 
@@ -155,9 +155,10 @@ namespace SenseiSkills
 
 
         public override async Task Combat()
-        { Log.Info("Combat Called===============");
+        {
+            Log.Info("Combat Called===============");
 
-            // GameManager.LocalPlayer.Update();
+            GameManager.LocalPlayer.Update();
 
             Log.InfoFormat("Current Stance {0}", GameManager.LocalPlayer.Stance);
 
@@ -167,51 +168,51 @@ namespace SenseiSkills
             List<Effect> targetEffects = new List<Effect>();
             //List<Effect> selfEffects = new List<Effect>();
 
-           
+
 
             Actor target = null;
             try
             {
                 target = GameManager.LocalPlayer.CurrentTarget;
 
-              
+
 
                 Log.Info("Killing " + target.Name + " Dis:" + (target.Distance / 50));
-               
+
 
             }
             catch (Exception ex)
             {
 
-               //Log.Error("NO TARGET FOUND (combat) = "+ex.Message);
+                //Log.Error("NO TARGET FOUND (combat) = "+ex.Message);
                 return;
             }
 
 
-/*
-            try
-            {
-                selfEffects = GameManager.LocalPlayer.Effects.ToList();
+            /*
+                        try
+                        {
+                            selfEffects = GameManager.LocalPlayer.Effects.ToList();
 
-                Log.Info("Self Effect count: " + selfEffects.Count);
+                            Log.Info("Self Effect count: " + selfEffects.Count);
 
 
-                /*
-                foreach (Effect effect in selfEffects.ToList())
-                {
-                    Log.InfoFormat("Self Effect==> {0} Stack {1}",  effect.Name, effect.StackCount);
+                            /*
+                            foreach (Effect effect in selfEffects.ToList())
+                            {
+                                Log.InfoFormat("Self Effect==> {0} Stack {1}",  effect.Name, effect.StackCount);
 
-                   
-                   // Log.Info(effect.Dump());
-                }*//*
 
-            }
-            catch (Exception ex)
-            {
+                               // Log.Info(effect.Dump());
+                            }*//*
 
-                 Log.Error("PROBLEM GETTING EFECTS = " + ex.Message);
-            }
-    */
+                        }
+                        catch (Exception ex)
+                        {
+
+                             Log.Error("PROBLEM GETTING EFECTS = " + ex.Message);
+                        }
+                */
 
             try
             {
@@ -238,46 +239,48 @@ namespace SenseiSkills
             }
 
 
-            try { 
-                    if (target != null && (target.Distance / 50) < profile.gapCloseRange)
+            try
+            {
+                if (target != null && (target.Distance / 50) < profile.gapCloseRange)
 
+                {
+                    Log.Info("Try to Gap Close for range " + (target.Distance / 50));
+                    Log.Info("GAP CLOSER CANT:" + profile.skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList().Count);
+                    foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList())
                     {
-                        Log.Info("Try to Gap Close for range " + (target.Distance / 50));
-                        Log.Info("GAP CLOSER CANT:" + profile.skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList().Count);
-                        foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList())
+                        if (await ExecuteandChainSkill(skill, target))
                         {
-                            if (await ExecuteandChainSkill(skill, target))
-                            {
-                                return;
-                            }
-
+                            return;
                         }
-                    }
 
-        }
+                    }
+                }
+
+            }
             catch (Exception ex)
             {
                 Log.Error("Problem Performing Gap Close");
             }
 
 
-            try { 
-
-            //CC BREAK
-            if (breakCC)
+            try
             {
-                Log.Info("Try to Break CC");
-                foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.CCBREAK)).ToList())
+
+                //CC BREAK
+                if (breakCC)
                 {
-                    if (await ExecuteandChainSkill(skill))
+                    Log.Info("Try to Break CC");
+                    foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.CCBREAK)).ToList())
                     {
-                        return;
+                        if (await ExecuteandChainSkill(skill))
+                        {
+                            return;
+                        }
+
                     }
 
                 }
-
             }
-        }
             catch (Exception ex)
             {
                 Log.Error("Problem Performing BreakCC");
@@ -286,30 +289,31 @@ namespace SenseiSkills
             //REGULAR
 
 
-            try { 
-    Log.Info("Try to Regular DPS");
-            foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.DPS)).ToList())
+            try
             {
-                if (skill.condition.type == ConditionType.STACK)
+                Log.Info("Try to Regular DPS");
+                foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.DPS)).ToList())
                 {
-                    targetEffects = getNpcEffects(target,targetEffects);
-                    List<Effect> curEf = targetEffects.Where(obj => obj.Name.Equals(skill.condition.conditionName)).ToList();
-
-                    if (curEf.Count >= 1)
+                    if (skill.condition.type == ConditionType.STACK)
                     {
-                        Effect ef = curEf.First();
-                        Log.InfoFormat("Effect {0} with stacks {1} >= {2}", ef.Name, ef.StackCount, skill.condition.stackCount);
-                        if (ef.StackCount >= skill.condition.stackCount)
+                        targetEffects = getNpcEffects(target, targetEffects);
+                        List<Effect> curEf = targetEffects.Where(obj => obj.Name.Equals(skill.condition.conditionName)).ToList();
+
+                        if (curEf.Count >= 1)
                         {
-                        }
-                        else
-                        {
-                            //Log.Info("Doesnt fullfill stack requirements");
-                            continue;
+                            Effect ef = curEf.First();
+                            Log.InfoFormat("Effect {0} with stacks {1} >= {2}", ef.Name, ef.StackCount, skill.condition.stackCount);
+                            if (ef.StackCount >= skill.condition.stackCount)
+                            {
+                            }
+                            else
+                            {
+                                //Log.Info("Doesnt fullfill stack requirements");
+                                continue;
+                            }
                         }
                     }
-                }
-                 else  if (skill.condition.type == ConditionType.STANCE)
+                    else if (skill.condition.type == ConditionType.STANCE)
                     {
                         Log.InfoFormat("Player Stance {0} required Stance {1}", GameManager.LocalPlayer.Stance.ToString(), skill.condition.conditionName);
                         if (skill.condition.conditionName.Equals(GameManager.LocalPlayer.Stance.ToString()))
@@ -321,17 +325,17 @@ namespace SenseiSkills
                         }
 
                     }
-                   else if (skill.condition.type == ConditionType.NONE)
-                {
-                   
-                }
+                    else if (skill.condition.type == ConditionType.NONE)
+                    {
 
-                if (await ExecuteandChainSkill(skill, target))
-                {
-                    return;
-                }
+                    }
 
-            }
+                    if (await ExecuteandChainSkill(skill, target))
+                    {
+                        return;
+                    }
+
+                }
 
 
             }
@@ -342,16 +346,17 @@ namespace SenseiSkills
 
             //DEFAULT
 
-            try { 
-            Log.Info("Try to DEFAULT DPS");
-            foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.DEFAULT)).ToList())
+            try
             {
-                if (await ExecuteandChainSkill(skill))
+                Log.Info("Try to DEFAULT DPS");
+                foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.DEFAULT)).ToList())
                 {
-                    return;
-                }
+                    if (await ExecuteandChainSkill(skill))
+                    {
+                        return;
+                    }
 
-            }
+                }
             }
             catch (Exception ex)
             {
@@ -417,9 +422,9 @@ namespace SenseiSkills
             if (!(castResult <= SkillUseError.None) && castResult != SkillUseError.LinkFailed)
                 return false;
 
-            
 
-        Log.Info("+++Casting " + skillName + " on key " + "SS" + " with sleep: " + castDuration);
+
+            Log.Info("+++Casting " + skillName + " on key " + "SS" + " with sleep: " + castDuration);
             InputManager.PressKey(Keys.S);
             await Coroutine.Sleep(100);
             InputManager.PressKey(Keys.S);
@@ -437,55 +442,56 @@ namespace SenseiSkills
             //dumpSkillsnActions();
             //Keys hotkey = Keys.R;
             int castDuration = profile.minCastTime;
+
+            //Log.Info("Cheking skill: " + skillName);
+
+            var skill = GameManager.LocalPlayer.GetSkillByName(skillName);
+            if (skill == null)
+            {
+                Log.Info(skillName + " not available");
+                return false;
+            }
+
+            var castResult = skill.ActorCanCastResult(GameManager.LocalPlayer);
+
+            // Log.Info("Cast Duration " + skill.CastDuration);
+
             if (!ignoreState)
             {
-                //Log.Info("Cheking skill: " + skillName);
-
-                var skill = GameManager.LocalPlayer.GetSkillByName(skillName);
-                if (skill == null)
-                {
-                    Log.Info(skillName + " not available");
-                    return false;
-                }
-
-                var castResult = skill.ActorCanCastResult(GameManager.LocalPlayer);
-
-                // Log.Info("Cast Duration " + skill.CastDuration);
-
                 Log.Warn(skillName + " CanCast result: " + castResult + " Range min:" + skill.MinRange + " Max:" + skill.MaxRange);
                 if (!(castResult <= SkillUseError.None))
                     return false;
-
-                //Log.Info("Verifying Range");
-
-                if (target != null && skill.MaxRange < (target.Distance / 50))
-                {
-                    Log.Info("Outside of range");
-                    return false;
-                }
-                else
-                {
-                    Log.Info("Within range");
-                }
-
-                if (skill.CastDuration > castDuration)
-                {
-                    castDuration = skill.CastDuration;
-                }
-
-
-               
-                skill.Cast();
             }
             else
             {
                 Log.Warn("Ignoring Skill state");
             }
 
+            //Log.Info("Verifying Range");
+
+            if (target != null && skill.MaxRange < (target.Distance / 50))
+            {
+                Log.Info("Outside of range");
+                return false;
+            }
+            else
+            {
+                Log.Info("Within range");
+            }
+
+            if (skill.CastDuration > castDuration)
+            {
+                castDuration = skill.CastDuration;
+            }
+
+
+
+            skill.Cast();
+
             Log.Info("+++Casting " + skillName + " with sleep: " + castDuration);
             //InputManager.PressKey(hotkey);
 
-            
+
 
             /*
             while (GameManager.LocalPlayer.IsCasting)
@@ -505,7 +511,7 @@ namespace SenseiSkills
         {
             if (GameManager.LocalPlayer.HealthPercent <= profile.potUsePct)
             {
-                Log.Info("Using potion");
+                Log.Info("Using potion on key " + profile.potKey);
                 InputManager.PressKey(Helper.textToKey(profile.potKey));
                 await Coroutine.Sleep(100);
             }
@@ -518,9 +524,9 @@ namespace SenseiSkills
         {
             if (GameManager.LocalPlayer.HealthPercent <= profile.dumplingUsePct)
             {
-                Log.Info("Using dumpling");
+                Log.Info("Using dumpling on key" + profile.dumplingKey);
                 InputManager.PressKey(Helper.textToKey(profile.dumplingKey));
-              
+
 
                 do
                 {
@@ -528,7 +534,7 @@ namespace SenseiSkills
                 } while (GameManager.LocalPlayer.HealthPercent < 100 && !GameManager.LocalPlayer.IsInCombat);
                 Log.Info("Done Resting");
             }
-            
+
 
             return true;
 
@@ -539,29 +545,29 @@ namespace SenseiSkills
 
         public async Task<bool> doLoot()
         {
-           
-          
-          //
+
+
+            //
             /*
             foreach (var context in GameManager.SkillsContext.AllAvailable)
             {
                 Log.Info(context.Type + " -> " + context.TargetId.ToString("X") + " -> " + (context.Skill.IsValid ? context.Skill.Name : context.Actor?.Name));
             }*/
 
-                List<SkillsContext.SkillContext> varlist = GameManager.SkillsContext.AllAvailable.Where(obj => obj.Type.Equals(SkillsContext.SkillBarType.NpcManipulate)|| obj.Type.Equals(SkillsContext.SkillBarType.FieldItemOpen15) || obj.Type.Equals(SkillsContext.SkillBarType.PickUpFieldItemAuto)|| obj.Type.Equals(SkillsContext.SkillBarType.PickUpFieldItemAutoAll)).ToList();
-            
-                //Log.Info(context.Type + " -> " + context.TargetId.ToString("X") + " -> " + (context.Skill.IsValid ? context.Skill.Name : context.Actor?.Name)+"  -> "+context.Skill.ShortcutKey.Dump());
-                if (varlist.Count >0 )
-                {
-                    Log.Info("Trying to autoloot");
+            List<SkillsContext.SkillContext> varlist = GameManager.SkillsContext.AllAvailable.Where(obj => obj.Type.Equals(SkillsContext.SkillBarType.NpcManipulate) || obj.Type.Equals(SkillsContext.SkillBarType.FieldItemOpen15) || obj.Type.Equals(SkillsContext.SkillBarType.PickUpFieldItemAuto) || obj.Type.Equals(SkillsContext.SkillBarType.PickUpFieldItemAutoAll)).ToList();
+
+            //Log.Info(context.Type + " -> " + context.TargetId.ToString("X") + " -> " + (context.Skill.IsValid ? context.Skill.Name : context.Actor?.Name)+"  -> "+context.Skill.ShortcutKey.Dump());
+            if (varlist.Count > 0)
+            {
+                Log.Info("Trying to autoloot");
                 InputManager.PressKey(Keys.F);
                 await Coroutine.Sleep(100);
 
             }
 
-            
 
-            
+
+
 
 
             return true;
