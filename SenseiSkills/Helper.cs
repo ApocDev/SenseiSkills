@@ -27,7 +27,7 @@ namespace SenseiSkills
         public static void writeToFile(String text)
         {
             path = Path.Combine(AppSettings.Instance.FullRoutinesPath, "SenseiSkills", path);
-            Log.Info("Writing: " + path + " " + text);
+           // Log.Info("Writing: " + path + " " + text);
             File.WriteAllText(path, text);
 
         }
@@ -40,7 +40,7 @@ namespace SenseiSkills
             path = Path.Combine(AppSettings.Instance.FullRoutinesPath, "SenseiSkills", path);
             string readText = File.ReadAllText(path);
 
-            Log.Info("Read: " + path + " " + readText);
+            //Log.Info("Read: " + path + " " + readText);
             return readText;
         }
 

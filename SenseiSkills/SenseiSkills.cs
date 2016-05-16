@@ -78,17 +78,20 @@ namespace SenseiSkills
         {
             //Log.Info("Heal Called===============");
             await doLoot();
-            await doDumpling();
+            //await doDumpling();
 
         }
 
-
+        
         public override async Task Rest()
         {
+
+         
+
             //Log.Info("Rest Called===============");
             if (profile.attackTarget)
             {
-                //GAP CLOSE
+                //PULL
                 Actor target = null;
                 try
                 {
@@ -98,9 +101,8 @@ namespace SenseiSkills
 
                     if (target != null && (target.Distance / 50) < profile.gapCloseRange)
                     {
-                        Log.Info("Try to Gap Close for range " + (target.Distance / 50));
-                        SkillInfo skill = profile.skillList.Where(i => i.type.Equals(SkillType.PULL)).First();
-                        if (skill != null && skill.condition.type == ConditionType.NONE)
+                        Log.Info("Try to PULL Close for range " + (target.Distance / 50));
+                        foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.PULL)).ToList())
                         {
                             if (await ExecuteandChainSkill(skill, target))
                             {
@@ -157,16 +159,16 @@ namespace SenseiSkills
         public override async Task Combat()
         {
             Log.Info("Combat Called===============");
-
+            
             GameManager.LocalPlayer.Update();
 
             Log.InfoFormat("Current Stance {0}", GameManager.LocalPlayer.Stance);
 
-            await doPot();
+            //await doPot();
 
             bool breakCC = false;
             List<Effect> targetEffects = new List<Effect>();
-            //List<Effect> selfEffects = new List<Effect>();
+            List<Effect> selfEffects = new List<Effect>();
 
 
 
@@ -179,6 +181,21 @@ namespace SenseiSkills
 
                 Log.Info("Killing " + target.Name + " Dis:" + (target.Distance / 50));
 
+                try
+                {
+                    float facing = MovementManager.CalculateFacing(GameManager.LocalPlayer.Position, target.Position);
+
+                    //Log.Info("Facing=> "+facing);
+
+                    //MovementManager.Face(MovementManager.FacingToRotation(facing));
+
+                }
+                catch (Exception ex)
+                {
+                     Log.Error("Problem moving = " + ex.Message);
+                    return;
+                }
+
 
             }
             catch (Exception ex)
@@ -189,7 +206,7 @@ namespace SenseiSkills
             }
 
 
-            /*
+            
                         try
                         {
                             selfEffects = GameManager.LocalPlayer.Effects.ToList();
@@ -204,7 +221,7 @@ namespace SenseiSkills
 
 
                                // Log.Info(effect.Dump());
-                            }*//*
+                            }*/
 
                         }
                         catch (Exception ex)
@@ -212,7 +229,7 @@ namespace SenseiSkills
 
                              Log.Error("PROBLEM GETTING EFECTS = " + ex.Message);
                         }
-                */
+               
 
             try
             {
@@ -241,7 +258,7 @@ namespace SenseiSkills
 
             try
             {
-                if (target != null && (target.Distance / 50) < profile.gapCloseRange)
+                if (target != null && (target.Distance / 50) > profile.gapCloseRange)
 
                 {
                     Log.Info("Try to Gap Close for range " + (target.Distance / 50));

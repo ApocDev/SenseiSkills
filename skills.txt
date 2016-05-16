@@ -11,6 +11,19 @@
   "skillList": [
     {
       "type": 7,
+      "skillName": "Inferno",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "condition": {
+        "type": 0,
+        "conditionName": "",
+        "stackCount": 0,
+        "conditionAmount": 0,
+        "conditionSelf": false
+      }
+    },
+    {
+      "type": 7,
       "skillName": "Blazing Palm",
       "ignoreSkillError": false,
       "chainSkill": [],
