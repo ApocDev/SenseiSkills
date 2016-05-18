@@ -11,7 +11,6 @@ namespace SenseiSkills
         public bool attackTarget = true;
         public bool rangedClass = true;
         public int minCastTime = 200;
-        public int evadeRange = 5;
         public int gapCloseRange = 16;
 
         public String potKey="6";
@@ -29,7 +28,7 @@ namespace SenseiSkills
         public ConditionType type;
         public String conditionName;
         public int stackCount = 0;
-        public int conditionAmt = 0;
+        public int conditionAmount = 0;
         public bool conditionSelf = false;
 
     }
@@ -44,7 +43,7 @@ namespace SenseiSkills
         public List<SkillInfo> chainSkill = new List<SkillInfo>();
 
         public SkillType type;
-        public SkillCondition condition;
+        public List<SkillCondition> conditions;
         public bool selfSkill = false;
 
        
@@ -52,49 +51,6 @@ namespace SenseiSkills
     }
    
 
-    /*
-    public static SkillType getSkillType(String label)
-    {
-        switch (label)
-        {
-            case "GAPCLOSER":
-                return SkillType.GAPCLOSER;
-            case "CCBREAK":
-                return SkillType.CCBREAK;
-            case "DPS":
-                return SkillType.DPS;
-            case "EVADE":
-                return SkillType.EVADE;
-            case "CC":
-                return SkillType.CC;
-            case "HEAL":
-                return SkillType.HEAL;
-            case "DEFAULT":
-                return SkillType.DEFAULT;
-
-        }
-
-        return SkillType.DEFAULT;
-    }*/
-
-   
-
-    static class CircularLinkedList
-    {
-        public static LinkedListNode<object> NextOrFirst(this LinkedListNode<object> current)
-        {
-            if (current.Next == null)
-                return current.List.First;
-            return current.Next;
-        }
-
-        public static LinkedListNode<object> PreviousOrLast(this LinkedListNode<object> current)
-        {
-            if (current.Previous == null)
-                return current.List.Last;
-            return current.Previous;
-        }
-    }
 
     
 }

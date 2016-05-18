@@ -141,18 +141,7 @@ namespace SenseiSkills
 
 
 
-            SkillLeaf gapClose = new SkillLeaf();
-            gapClose.skillName = "GAPCLOSER";
-
-
-            foreach (SkillInfo skill in skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList())
-            {
-                SkillLeaf skillTr = addLeaf(skill);
-                gapClose.Skills.Add(skillTr);
-
-            }
-
-
+           
             SkillLeaf ccBreak = new SkillLeaf();
             ccBreak.skillName = "CCBREAK";
 
@@ -198,7 +187,6 @@ namespace SenseiSkills
 
             }
 
-            root.Skills.Add(gapClose);
             root.Skills.Add(ccBreak);
             root.Skills.Add(dps);
             root.Skills.Add(defaulSkills);

@@ -76,17 +76,19 @@ namespace SenseiSkills
 
         public override async Task Heal()
         {
+
+            //Log.InfoFormat("Player HP {0} MAX HP {1} PCTHP {2}", GameManager.LocalPlayer.Health, GameManager.LocalPlayer.MaxHealth, GameManager.LocalPlayer.HealthPercent);
             //Log.Info("Heal Called===============");
             await doLoot();
             //await doDumpling();
 
         }
 
-        
+
         public override async Task Rest()
         {
 
-         
+
 
             //Log.Info("Rest Called===============");
             if (profile.attackTarget)
@@ -96,6 +98,13 @@ namespace SenseiSkills
                 try
                 {
                     target = GameManager.LocalPlayer.CurrentTarget;
+
+                    if (target == null)
+                    {
+                        target = CombatUtils.closestEnemy(true);
+                         TurnToActor(target);
+                    }
+
 
                     Log.Info("Init Combat to " + target.Name + " Dis:" + (target.Distance / 50));
 
@@ -129,37 +138,17 @@ namespace SenseiSkills
         /// 
 
 
-        public List<Effect> getNpcEffects(Actor target, List<Effect> targetEffects)
-        {
+
+        
 
 
-            try
-            {
-                targetEffects = target.Effects.ToList();
-
-                Log.Info("Target Effect count: " + targetEffects.Count);
-
-                foreach (Effect effect in targetEffects.ToList())
-                {
-                    //do stuff with the debuffs
-                    Log.InfoFormat("Target {0} Effect==> {1} Stack {2}", target.Name, effect.Name, effect.StackCount);
-                    // Log.Info(effect.Dump());
-                }
-            }
-            catch (Exception ex)
-            {
-
-                Log.Error("Effect Issue = " + ex.Message);
-
-            }
-            return targetEffects;
-        }
+        List<String> cclist = new List<String> { "fuckedup" };
 
 
         public override async Task Combat()
         {
             Log.Info("Combat Called===============");
-            
+
             GameManager.LocalPlayer.Update();
 
             Log.InfoFormat("Current Stance {0}", GameManager.LocalPlayer.Stance);
@@ -183,16 +172,19 @@ namespace SenseiSkills
 
                 try
                 {
-                    float facing = MovementManager.CalculateFacing(GameManager.LocalPlayer.Position, target.Position);
+                    //float facing = MovementManager.CalculateFacing(GameManager.LocalPlayer.Position, target.Position);
 
                     //Log.Info("Facing=> "+facing);
 
-                    //MovementManager.Face(MovementManager.FacingToRotation(facing));
+                    Log.InfoFormat("Creature Type: " + target.CreatureType);
+                     TurnToActor(target);
+
 
                 }
                 catch (Exception ex)
                 {
-                     Log.Error("Problem moving = " + ex.Message);
+                    Log.Error("Problem moving = " + ex.Message);
+                    Log.Error(ex);
                     return;
                 }
 
@@ -206,79 +198,67 @@ namespace SenseiSkills
             }
 
 
-            
-                        try
-                        {
-                            selfEffects = GameManager.LocalPlayer.Effects.ToList();
-
-                            Log.Info("Self Effect count: " + selfEffects.Count);
-
-
-                            /*
-                            foreach (Effect effect in selfEffects.ToList())
-                            {
-                                Log.InfoFormat("Self Effect==> {0} Stack {1}",  effect.Name, effect.StackCount);
-
-
-                               // Log.Info(effect.Dump());
-                            }*/
-
-                        }
-                        catch (Exception ex)
-                        {
-
-                             Log.Error("PROBLEM GETTING EFECTS = " + ex.Message);
-                        }
-               
 
             try
             {
-                if (profile.rangedClass && (target.Distance / 50) < profile.evadeRange)
-                {
-                    Log.Info("Try to EVADE for range " + (target.Distance / 50));
-                    Log.Info("EVADE CANT:" + profile.skillList.Where(i => i.type.Equals(SkillType.EVADE)).ToList().Count);
-                    foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.EVADE)).ToList())
-                    {
-                        if (skill.skillName.Equals("Backstep"))
-                        {
-                            if (await ExecuteSS(skill.skillName))
-                            {
-                                return;
-                            }
-                        }
+                selfEffects = GameManager.LocalPlayer.Effects.ToList();
 
-                    }
-                }
+                Log.Info("Self Effect count: " + selfEffects.Count);
+
+
+                breakCC = CombatUtils.effectInList(GameManager.LocalPlayer, cclist);
+
+                /*
+                foreach (Effect effect in selfEffects.ToList())
+                {
+                    Log.InfoFormat("Self Effect==> {0} Stack {1}",  effect.Name, effect.StackCount);
+
+
+                   // Log.Info(effect.Dump());
+                }*/
+
             }
             catch (Exception ex)
             {
-                Log.Error("Problem Performing Evade");
+
+                Log.Error("PROBLEM GETTING EFECTS = " + ex.Message);
             }
+
 
 
             try
             {
-                if (target != null && (target.Distance / 50) > profile.gapCloseRange)
-
+                Log.Info("Try to EVADE");
+                foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.EVADE)).ToList())
                 {
-                    Log.Info("Try to Gap Close for range " + (target.Distance / 50));
-                    Log.Info("GAP CLOSER CANT:" + profile.skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList().Count);
-                    foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.GAPCLOSER)).ToList())
+
+                    if (skill.skillName.Equals("Backstep") && CombatUtils.validateConditions(skill, target))
                     {
-                        if (await ExecuteandChainSkill(skill, target))
+                        if (await ExecuteSS(skill.skillName))
                         {
                             return;
                         }
 
                     }
+                    else
+                    {
+                        if (await ExecuteandChainSkill(skill, target))
+                        {
+                            return;
+                        }
+                    }
+
                 }
+
 
             }
             catch (Exception ex)
             {
-                Log.Error("Problem Performing Gap Close");
+                Log.Error("Problem Performing EVADE");
             }
 
+
+           
 
             try
             {
@@ -311,42 +291,7 @@ namespace SenseiSkills
                 Log.Info("Try to Regular DPS");
                 foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.DPS)).ToList())
                 {
-                    if (skill.condition.type == ConditionType.STACK)
-                    {
-                        targetEffects = getNpcEffects(target, targetEffects);
-                        List<Effect> curEf = targetEffects.Where(obj => obj.Name.Equals(skill.condition.conditionName)).ToList();
-
-                        if (curEf.Count >= 1)
-                        {
-                            Effect ef = curEf.First();
-                            Log.InfoFormat("Effect {0} with stacks {1} >= {2}", ef.Name, ef.StackCount, skill.condition.stackCount);
-                            if (ef.StackCount >= skill.condition.stackCount)
-                            {
-                            }
-                            else
-                            {
-                                //Log.Info("Doesnt fullfill stack requirements");
-                                continue;
-                            }
-                        }
-                    }
-                    else if (skill.condition.type == ConditionType.STANCE)
-                    {
-                        Log.InfoFormat("Player Stance {0} required Stance {1}", GameManager.LocalPlayer.Stance.ToString(), skill.condition.conditionName);
-                        if (skill.condition.conditionName.Equals(GameManager.LocalPlayer.Stance.ToString()))
-                        { }
-                        else
-                        {
-                            //Log.Info("Doesnt fullfill stance requirements");
-                            continue;
-                        }
-
-                    }
-                    else if (skill.condition.type == ConditionType.NONE)
-                    {
-
-                    }
-
+                    
                     if (await ExecuteandChainSkill(skill, target))
                     {
                         return;
@@ -386,30 +331,51 @@ namespace SenseiSkills
 
         private static ILog Log = LogManager.GetLogger("[SenseiSkills]");
 
-        async Task<bool> ExecuteandChainSkill(SkillInfo skill, Actor target = null)
+        #region skillcast
+
+
+        void TurnToActor(Actor target)
         {
-            if (await ExecuteSkill(skill, target))
+
+           
+            GameEngine.AttachedProcess.Memory.ClearCache();
+            using (GameEngine.AttachedProcess.Memory.AcquireFrame(true))
             {
-
-                if (skill.chainSkill.Count > 0)
+                if (target != null && target.IsValid)
                 {
-                    foreach (SkillInfo sk in skill.chainSkill)
-                    {
-                        await waitGCD(sk.skillName);
-                        Log.Info("Chaining " + sk.skillName + " after " + skill.skillName);
-                        if (await ExecuteandChainSkill(sk))
-                        {
-                            return true;
-                        }
-                    }
+                    Log.InfoFormat("Turning to target {0}", target.Name);
+                     MovementManager.Face(target);
                 }
-
-                return true;
             }
-            return false;
+
+           
         }
 
+        async Task<bool> ExecuteandChainSkill(SkillInfo skill, Actor target = null)
+        {
+            if(CombatUtils.validateConditions(skill,target))
+            {
+                if (await ExecuteSkill(skill, target))
+                {
 
+                    if (skill.chainSkill.Count > 0)
+                    {
+                        foreach (SkillInfo sk in skill.chainSkill)
+                        {
+                            await waitGCD(sk.skillName);
+                            Log.Info("Chaining " + sk.skillName + " after " + skill.skillName);
+                            if (await ExecuteandChainSkill(sk))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+          }
+            return false;
+        }
 
         async Task<bool> ExecuteSkill(SkillInfo skill, Actor target = null)
         {
@@ -523,43 +489,6 @@ namespace SenseiSkills
         }
 
 
-
-        public async Task<bool> doPot()
-        {
-            if (GameManager.LocalPlayer.HealthPercent <= profile.potUsePct)
-            {
-                Log.Info("Using potion on key " + profile.potKey);
-                InputManager.PressKey(Helper.textToKey(profile.potKey));
-                await Coroutine.Sleep(100);
-            }
-            return true;
-
-
-        }
-
-        public async Task<bool> doDumpling()
-        {
-            if (GameManager.LocalPlayer.HealthPercent <= profile.dumplingUsePct)
-            {
-                Log.Info("Using dumpling on key" + profile.dumplingKey);
-                InputManager.PressKey(Helper.textToKey(profile.dumplingKey));
-
-
-                do
-                {
-                    await Coroutine.Sleep(100);
-                } while (GameManager.LocalPlayer.HealthPercent < 100 && !GameManager.LocalPlayer.IsInCombat);
-                Log.Info("Done Resting");
-            }
-
-
-            return true;
-
-
-        }
-
-
-
         public async Task<bool> doLoot()
         {
 
@@ -633,7 +562,7 @@ namespace SenseiSkills
 
         }
 
-
+        #endregion
 
 
 

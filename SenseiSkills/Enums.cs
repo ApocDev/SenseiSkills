@@ -8,14 +8,14 @@ namespace SenseiSkills
 {
      public   enum SkillType
         {
-            DPS,
-            CC,
-            CCBREAK,
-            GAPCLOSER,
             DEFAULT,
-            HEAL,
+            DPS,
+            PULL,
+            CCBREAK,
             EVADE,
-            PULL
+            HEAL
+          
+           
         };
 
         public  enum ConditionType
@@ -24,8 +24,7 @@ namespace SenseiSkills
             DISTLT,
             DISTGT,
             STACK,
-            DEBUFF,
-            BUFF,
+            EFFECT,
             DEADSUMMON,
             STANCE,
             DONTUSE

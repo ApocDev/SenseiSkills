@@ -41,24 +41,12 @@ namespace SenseiSkills.Settings
 
             Skills = Helper.jsonToTree(Profile);
 
-            /*
-            //add Root items
-            Skills.Add(new SkillLeaf { skillName = "Dummy1" });
-            Skills.Add(new SkillLeaf { skillName = "Dummy1" });
-
-            //add sub items
-            Skills[0].Skills.Add(new SkillLeaf { skillName = "Dummy11" });
-            Skills[0].Skills.Add(new SkillLeaf { skillName = "Dummy12" });
-            */
-
+            
             DumpBackpackCommand = new RelayCommand(
                   parameter =>
                   {
                       
-                          Log.Info(
-                              "\n############################################\n"
-                              + "\nDumping Backpack Items. This will hang your client. Please wait....\n"
-                              + "##########################");
+                          Log.Info("");
                         
                  });
 

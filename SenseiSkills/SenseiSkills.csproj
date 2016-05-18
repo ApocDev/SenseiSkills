@@ -78,6 +78,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CombatUtils.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="GUI\Components\BoolToValueConverter.cs" />
     <Compile Include="GUI\Components\SettingsComponent.cs" />
