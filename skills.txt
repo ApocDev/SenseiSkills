@@ -6,7 +6,7 @@
   "potUsePct": 35,
   "dumplingKey": "5",
   "dumplingUsePct": 30,
-  "gapCloseRange":16,
+  "gapCloseRange": 16,
   "skillList": [
     {
       "type": 2,
@@ -255,7 +255,21 @@
           "conditionSelf": false
         }
       ]
+    },
+    {
+      "type": 3,
+      "skillName": "Retreat",
+      "ignoreSkillError": false,
+      "chainSkill": [],
+      "conditions": [
+        {
+          "type": 0,
+          "conditionName": "",
+          "stackCount": 0,
+          "conditionAmount": 0,
+          "conditionSelf": false
+        }
+      ]
     }
   ]
-  
 }

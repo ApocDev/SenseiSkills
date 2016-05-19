@@ -88,8 +88,17 @@ namespace SenseiSkills
             }
         }
 
+
+
+        
+
         public static bool effectInList(Actor target, List<String> effects)
         {
+
+
+
+          
+
             try
             {
                 List<Effect> targetEffects = target.Effects.ToList();
@@ -118,13 +127,14 @@ namespace SenseiSkills
             GameEngine.AttachedProcess.Memory.ClearCache();
             using (GameEngine.AttachedProcess.Memory.AcquireFrame(true))
             {
-                Log.Info("Getting Actors");
-                IEnumerable<Actor> actors = GameManager.Actors.Where(e =>e.IsValid && e.CurrentTargetId == GameManager.LocalPlayer.Id);
-                Log.InfoFormat("Got actors {0}", actors.Count());
+                //Log.Info("Getting Actors");
+                IEnumerable<Actor> actors = GameManager.Actors.Where(e =>e.IsValid && e.CurrentTargetId == GameManager.LocalPlayer.Id && e.IsHostile);
+                
                 actors = actors.OrderBy(e => e.Distance);
-                Log.Info("Sorted Actors by Distance");
+                //Log.Info("Sorted Actors by Distance");
                 if (actors.Count() > 0)
                 {
+                    Log.InfoFormat("Got actors {0}", actors.Count());
                     return actors.First();
                 }
             }

@@ -76,11 +76,25 @@ namespace SenseiSkills
 
         public override async Task Heal()
         {
+            //Log.Info("Moving Around");
+            //await StrafeAround();
 
             //Log.InfoFormat("Player HP {0} MAX HP {1} PCTHP {2}", GameManager.LocalPlayer.Health, GameManager.LocalPlayer.MaxHealth, GameManager.LocalPlayer.HealthPercent);
             //Log.Info("Heal Called===============");
             await doLoot();
             //await doDumpling();
+          
+
+        }
+
+
+        async Task<bool> StrafeAround()
+        {
+            Log.Info("Backward");
+            MovementManager.Backward();
+            
+            await Coroutine.Sleep(1000);
+            return true;
 
         }
 
@@ -142,7 +156,7 @@ namespace SenseiSkills
         
 
 
-        List<String> cclist = new List<String> { "fuckedup" };
+        List<String> cclist = new List<String> { "Knockdown" };
 
 
         public override async Task Combat()
@@ -207,15 +221,15 @@ namespace SenseiSkills
 
 
                 breakCC = CombatUtils.effectInList(GameManager.LocalPlayer, cclist);
-
-                /*
+                Log.Info("Lets Break CC ="+breakCC);
+                
                 foreach (Effect effect in selfEffects.ToList())
                 {
                     Log.InfoFormat("Self Effect==> {0} Stack {1}",  effect.Name, effect.StackCount);
 
 
                    // Log.Info(effect.Dump());
-                }*/
+                }
 
             }
             catch (Exception ex)
@@ -376,6 +390,8 @@ namespace SenseiSkills
           }
             return false;
         }
+
+        
 
         async Task<bool> ExecuteSkill(SkillInfo skill, Actor target = null)
         {

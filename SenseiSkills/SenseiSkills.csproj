@@ -51,6 +51,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GreyMagic">
+      <HintPath>..\..\..\GreyMagic.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\..\log4net.dll</HintPath>
     </Reference>
