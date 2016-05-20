@@ -26,6 +26,8 @@ namespace SenseiSkills
 
         public static void writeToFile(String text)
         {
+
+            path = GameManager.LocalPlayer.Name+".json";
             path = Path.Combine(AppSettings.Instance.FullRoutinesPath, "SenseiSkills", path);
            // Log.Info("Writing: " + path + " " + text);
             File.WriteAllText(path, text);
@@ -36,7 +38,7 @@ namespace SenseiSkills
 
         public static String readFromFile()
         {
-
+            path = GameManager.LocalPlayer.Name + ".json"; ;
             path = Path.Combine(AppSettings.Instance.FullRoutinesPath, "SenseiSkills", path);
             string readText = File.ReadAllText(path);
 

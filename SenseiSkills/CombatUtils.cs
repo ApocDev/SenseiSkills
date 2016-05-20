@@ -146,17 +146,33 @@ namespace SenseiSkills
 
         public static bool isDanger(Actor target)
         {
-            Actor targetTarget = target.CurrentTarget;
+            
 
-            if(targetTarget.Equals(GameManager.LocalPlayer))
+            if (target.CurrentTargetId == GameManager.LocalPlayer.Id)
             {
                 Log.Info("OMG is targetting me ");
-                return true;
-               
-            }else
-            {
+
+
+                if (target.IsCasting)
+                {
+                    Log.Info("OMG is casting something...");
+
+
+                    IEnumerable<Buddy.BladeAndSoul.Game.Action> actions =target.CurrentActions;
+
+                    foreach (Buddy.BladeAndSoul.Game.Action action in actions)
+                    {
+                        Log.Info(action.Dump());
+                    }
+
+                    return true;
+                }
+
+
+
+            }  
                 return false; //we are good for the time being.
-            }
+            
 
         }
 
@@ -202,6 +218,65 @@ namespace SenseiSkills
 
                     }
 
+
+                    if (condition.type == ConditionType.HPGT && !condition.conditionSelf)
+                    {
+                        Log.InfoFormat("Target HealtPCT to GT {0} >= {1}", target.HealthPercent, condition.conditionAmount);
+                        if (target.HealthPercent >= condition.conditionAmount)
+                        { }
+                        else return false;
+
+                    }
+
+
+                    if (condition.type == ConditionType.HPLT && !condition.conditionSelf)
+                    {
+                        Log.InfoFormat("Target HealtPCT to LT {0} <= {1}", target.HealthPercent, condition.conditionAmount);
+                        if (target.HealthPercent <= condition.conditionAmount)
+                        { }
+                        else return false;
+
+                    }
+
+
+                    if (condition.type == ConditionType.HPGT && condition.conditionSelf)
+                    {
+                        Log.InfoFormat("Self HealtPCT to GT {0} >= {1}", GameManager.LocalPlayer.HealthPercent, condition.conditionAmount);
+                        if (GameManager.LocalPlayer.HealthPercent >= condition.conditionAmount)
+                        { }
+                        else return false;
+
+                    }
+
+
+                    if (condition.type == ConditionType.HPLT && condition.conditionSelf)
+                    {
+                        Log.InfoFormat("Self HealtPCT to LT {0} <= {1}", GameManager.LocalPlayer.HealthPercent, condition.conditionAmount);
+                        if (GameManager.LocalPlayer.HealthPercent <= condition.conditionAmount)
+                        { }
+                        else return false;
+
+                    }
+
+
+                    if (condition.type == ConditionType.FOCUSGT )
+                    {
+                        Log.InfoFormat("Target Focus to LT {0} <= {1}", GameManager.LocalPlayer.Focus, condition.conditionAmount);
+                        if (GameManager.LocalPlayer.Focus <= condition.conditionAmount)
+                        { }
+                        else return false;
+
+                    }
+
+
+                    if (condition.type == ConditionType.FOCUSLT )
+                    {
+                        Log.InfoFormat("Self Focus to GT {0} >= {1}", GameManager.LocalPlayer.Focus, condition.conditionAmount);
+                        if (GameManager.LocalPlayer.Focus >= condition.conditionAmount)
+                        { }
+                        else return false;
+
+                    }
 
                     if (condition.type == ConditionType.STACK && !condition.conditionSelf)
                     {
@@ -287,8 +362,8 @@ namespace SenseiSkills
 
                     if (condition.type == ConditionType.DEADSUMMON)
                     {
-                        Log.InfoFormat("PCSummonedId {0}", GameManager.LocalPlayer.PcSummonedId);
-                        if (GameManager.LocalPlayer.PcSummonedId == 0)
+                        Log.InfoFormat("Summon (dead) is valid= {0}", GameManager.SummonedMinion != null);
+                        if (GameManager.SummonedMinion == null || (GameManager.SummonedMinion.IsValid && GameManager.SummonedMinion.HealthPercent==0))
                         {
                             //return true;
                         }
@@ -296,6 +371,22 @@ namespace SenseiSkills
                         {
                             return false;
                         }
+
+                    }
+
+                    if (condition.type == ConditionType.SUMMONALIVE)
+                    {
+                        Log.InfoFormat("Summon is valid= {0}", GameManager.SummonedMinion!=null);
+                        if (GameManager.SummonedMinion != null && GameManager.SummonedMinion.IsValid && GameManager.SummonedMinion.HealthPercent > 0)
+                        {
+                            Log.InfoFormat("Summon Info Name: {0} hp: {1}", GameManager.SummonedMinion.Name, GameManager.SummonedMinion.HealthPercent);
+
+                        }
+                        else
+                            return false;
+
+                            //return true;
+                       
 
                     }
 
@@ -311,6 +402,24 @@ namespace SenseiSkills
             return rtn;
         
         }
+
+
+        /*
+        public static bool move1 = false;
+        public static void moveTest()
+        {
+            GameEngine.AttachedProcess.Memory.ClearCache();
+            using (GameEngine.AttachedProcess.Memory.AcquireFrame(true))
+            {
+                Log.Info(GameManager.PlayerInput.Dump());
+                if (CombatUtils.move1 == false)
+                {
+                    GameManager.PlayerInput.ToggleKeepWalking();
+                }
+            }
+
+           *
+        }*/
 
     }
 }

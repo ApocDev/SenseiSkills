@@ -76,11 +76,21 @@ namespace SenseiSkills
 
         public override async Task Heal()
         {
+
+
+
             //Log.Info("Moving Around");
             //await StrafeAround();
 
             //Log.InfoFormat("Player HP {0} MAX HP {1} PCTHP {2}", GameManager.LocalPlayer.Health, GameManager.LocalPlayer.MaxHealth, GameManager.LocalPlayer.HealthPercent);
             //Log.Info("Heal Called===============");
+
+            if (GameManager.LocalPlayer.IsCasting)
+            {
+                await Coroutine.Sleep(100);
+                return;
+            }
+
             await doLoot();
             //await doDumpling();
           
@@ -271,8 +281,32 @@ namespace SenseiSkills
                 Log.Error("Problem Performing EVADE");
             }
 
+            try
+            {
 
-           
+                
+                    Log.Info("Try to Block");
+                if (CombatUtils.isDanger(target))
+                {
+                    foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.BLOCK)).ToList())
+                    {
+
+                        if (await ExecuteandChainSkill(skill))
+                        {
+                            return;
+                        }
+
+                    }
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Problem Performing Block");
+            }
+
+
 
             try
             {
@@ -457,8 +491,10 @@ namespace SenseiSkills
 
             if (!ignoreState)
             {
-                Log.Warn(skillName + " CanCast result: " + castResult + " Range min:" + skill.MinRange + " Max:" + skill.MaxRange);
-                if (!(castResult <= SkillUseError.None))
+                Log.Info(skillName + " CanCast result: " + castResult + " Range min:" + skill.MinRange + " Max:" + skill.MaxRange);
+                if ((castResult <= SkillUseError.None) || (castResult == SkillUseError.WrongCasterType))
+                { Log.Info("Skill Valid" + skillName); }
+                else
                     return false;
             }
             else
@@ -487,7 +523,7 @@ namespace SenseiSkills
 
             skill.Cast();
 
-            Log.Info("+++Casting " + skillName + " with sleep: " + castDuration);
+            Log.Warn("+++Casting " + skillName + " with sleep: " + castDuration);
             //InputManager.PressKey(hotkey);
 
 

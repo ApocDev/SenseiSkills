@@ -13,7 +13,8 @@ namespace SenseiSkills
             PULL,
             CCBREAK,
             EVADE,
-            HEAL
+            HEAL,
+            BLOCK
           
            
         };
@@ -27,7 +28,12 @@ namespace SenseiSkills
             EFFECT,
             DEADSUMMON,
             STANCE,
-            DONTUSE
+            DONTUSE,
+            HPLT,
+            HPGT,
+            FOCUSLT,
+            FOCUSGT,
+            SUMMONALIVE
 
         };
     
