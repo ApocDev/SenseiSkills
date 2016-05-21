@@ -112,7 +112,7 @@ namespace SenseiSkills
         public override async Task Rest()
         {
 
-
+            inBlock = false;
 
             //Log.Info("Rest Called===============");
             if (profile.attackTarget)
@@ -129,6 +129,7 @@ namespace SenseiSkills
                          TurnToActor(target);
                     }
 
+                  
 
                     Log.Info("Init Combat to " + target.Name + " Dis:" + (target.Distance / 50));
 
@@ -167,11 +168,16 @@ namespace SenseiSkills
 
 
         List<String> cclist = new List<String> { "Knockdown" };
+        List<String> sslist = new List<String> { "Backstep","Eclipse" };
 
+
+        bool breakCC = false;
+        bool inBlock = false;
 
         public override async Task Combat()
         {
             Log.Info("Combat Called===============");
+            breakCC = false;
 
             GameManager.LocalPlayer.Update();
 
@@ -179,7 +185,7 @@ namespace SenseiSkills
 
             //await doPot();
 
-            bool breakCC = false;
+         
             List<Effect> targetEffects = new List<Effect>();
             List<Effect> selfEffects = new List<Effect>();
 
@@ -201,15 +207,15 @@ namespace SenseiSkills
                     //Log.Info("Facing=> "+facing);
 
                     Log.InfoFormat("Creature Type: " + target.CreatureType);
-                     TurnToActor(target);
+                    TurnToActor(target);
 
 
                 }
                 catch (Exception ex)
                 {
                     Log.Error("Problem moving = " + ex.Message);
-                    Log.Error(ex);
-                    return;
+                    //Log.Error(ex);
+                    //return;
                 }
 
 
@@ -227,7 +233,7 @@ namespace SenseiSkills
             {
                 selfEffects = GameManager.LocalPlayer.Effects.ToList();
 
-                Log.Info("Self Effect count: " + selfEffects.Count);
+                Log.DebugFormat("Self Effect count: " + selfEffects.Count);
 
 
                 breakCC = CombatUtils.effectInList(GameManager.LocalPlayer, cclist);
@@ -235,7 +241,7 @@ namespace SenseiSkills
                 
                 foreach (Effect effect in selfEffects.ToList())
                 {
-                    Log.InfoFormat("Self Effect==> {0} Stack {1}",  effect.Name, effect.StackCount);
+                    Log.DebugFormat("Self Effect==> {0} Stack {1}",  effect.Name, effect.StackCount);
 
 
                    // Log.Info(effect.Dump());
@@ -250,13 +256,26 @@ namespace SenseiSkills
 
 
 
+            if (CombatUtils.isBlockable(target) && GameManager.LocalPlayer.IsCasting)
+            {
+                inBlock = true;
+
+            }
+            else 
+            {
+                inBlock = false;
+            }
+               
+
+
+
             try
             {
                 Log.Info("Try to EVADE");
                 foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.EVADE)).ToList())
                 {
 
-                    if (skill.skillName.Equals("Backstep") && CombatUtils.validateConditions(skill, target))
+                    if (sslist.Contains(skill.skillName)  && CombatUtils.validateConditions(skill, target,inBlock))
                     {
                         if (await ExecuteSS(skill.skillName))
                         {
@@ -286,18 +305,20 @@ namespace SenseiSkills
 
                 
                     Log.Info("Try to Block");
-                if (CombatUtils.isDanger(target))
-                {
+               
                     foreach (SkillInfo skill in profile.skillList.Where(i => i.type.Equals(SkillType.BLOCK)).ToList())
                     {
-
-                        if (await ExecuteandChainSkill(skill))
+                        if(CombatUtils.willBlock(target,skill.skillName))
                         {
-                            return;
+                            if (await ExecuteandChainSkill(skill))
+                            {
+                                inBlock = true;
+                                return;
+                            }
                         }
 
                     }
-                }
+                
 
                 
             }
@@ -385,7 +406,7 @@ namespace SenseiSkills
         void TurnToActor(Actor target)
         {
 
-           
+           /*
             GameEngine.AttachedProcess.Memory.ClearCache();
             using (GameEngine.AttachedProcess.Memory.AcquireFrame(true))
             {
@@ -394,14 +415,17 @@ namespace SenseiSkills
                     Log.InfoFormat("Turning to target {0}", target.Name);
                      MovementManager.Face(target);
                 }
-            }
+            }*/
+
+          
+            target.Face();
 
            
         }
 
         async Task<bool> ExecuteandChainSkill(SkillInfo skill, Actor target = null)
         {
-            if(CombatUtils.validateConditions(skill,target))
+            if(CombatUtils.validateConditions(skill,target,inBlock))
             {
                 if (await ExecuteSkill(skill, target))
                 {
@@ -427,10 +451,7 @@ namespace SenseiSkills
 
         
 
-        async Task<bool> ExecuteSkill(SkillInfo skill, Actor target = null)
-        {
-            return await ExecuteSkill(skill.skillName, target, skill.ignoreSkillError);
-        }
+   
 
         async Task<bool> ExecuteSS(string skillName)
         {
@@ -451,7 +472,7 @@ namespace SenseiSkills
 
             // Log.Info("Cast Duration " + skill.CastDuration);
 
-            Log.Warn(skillName + " CanCast result: " + castResult + "Range min:" + skill.MinRange + " Max:" + skill.MaxRange);
+            Log.Info(skillName + " CanCast result: " + castResult + "Range min:" + skill.MinRange + " Max:" + skill.MaxRange);
             if (!(castResult <= SkillUseError.None) && castResult != SkillUseError.LinkFailed)
                 return false;
 
@@ -470,7 +491,7 @@ namespace SenseiSkills
 
         }
 
-        async Task<bool> ExecuteSkill(string skillName, Actor target = null, Boolean ignoreState = false)
+        async Task<bool> ExecuteSkill(SkillInfo skillInfo, Actor target = null)
         {
             //dumpSkillsnActions();
             //Keys hotkey = Keys.R;
@@ -478,22 +499,26 @@ namespace SenseiSkills
 
             //Log.Info("Cheking skill: " + skillName);
 
-            var skill = GameManager.LocalPlayer.GetSkillByName(skillName);
+            var skill = GameManager.LocalPlayer.GetSkillByName(skillInfo.skillName);
             if (skill == null)
             {
-                Log.Info(skillName + " not available");
+                //Log.Info(skillName + " not available");
                 return false;
             }
 
             var castResult = skill.ActorCanCastResult(GameManager.LocalPlayer);
+            var castResultSummon = skill.ActorCanCastResult(GameManager.SummonedMinion);
+
 
             // Log.Info("Cast Duration " + skill.CastDuration);
 
-            if (!ignoreState)
+            if (!skillInfo.ignoreSkillError)
             {
-                Log.Info(skillName + " CanCast result: " + castResult + " Range min:" + skill.MinRange + " Max:" + skill.MaxRange);
-                if ((castResult <= SkillUseError.None) || (castResult == SkillUseError.WrongCasterType))
-                { Log.Info("Skill Valid" + skillName); }
+                Log.Debug(skillInfo.skillName + " CanCast result: " + castResult + " Range min:" + skill.MinRange + " Max:" + skill.MaxRange);
+                if ((castResult <= SkillUseError.None) || (castResultSummon <= SkillUseError.None))
+                { 
+                    //Log.Info("Skill Valid " + skillName);
+                }
                 else
                     return false;
             }
@@ -511,19 +536,33 @@ namespace SenseiSkills
             }
             else
             {
-                Log.Info("Within range");
+                //Log.Info("Within range");
             }
 
-            if (skill.CastDuration > castDuration)
+
+
+            int fullCast = skill.CastDuration+ skill.Record.ExecDuration1; //TODO check if we can anicancel lateron
+
+
+            if (skillInfo.channeledSkill)
             {
-                castDuration = skill.CastDuration;
+                 fullCast = skill.Record.ExecDuration1 + skill.Record.ExecDuration2
+                    + skill.Record.ExecDuration3 + skill.Record.ExecDuration4 + skill.Record.ExecDuration5;
+
+            }
+            
+
+
+            if (fullCast > castDuration)
+            {
+                castDuration = fullCast;
             }
 
 
 
             skill.Cast();
 
-            Log.Warn("+++Casting " + skillName + " with sleep: " + castDuration);
+            Log.Warn("+++Casting " + skillInfo.skillName + " with sleep: " + castDuration);
             //InputManager.PressKey(hotkey);
 
 

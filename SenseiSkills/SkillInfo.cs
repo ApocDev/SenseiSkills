@@ -12,6 +12,7 @@ namespace SenseiSkills
         public bool rangedClass = true;
         public int minCastTime = 200;
         public int gapCloseRange = 16;
+        
 
         public String potKey="6";
         public String dumplingKey = "5";
@@ -31,11 +32,14 @@ namespace SenseiSkills
         public int conditionAmount = 0;
         public bool conditionSelf = false;
 
+
     }
 
     public class SkillInfo
     {
         public String skillName;
+        public bool breakBlock = true;
+        public bool channeledSkill = false;
  
 
         public bool ignoreSkillError = false;
