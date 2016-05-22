@@ -81,6 +81,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncLock.cs" />
+    <Compile Include="CombatHandler\GenericCombatHandler.cs" />
+    <Compile Include="CombatHandler\ICombatHandler.cs" />
     <Compile Include="CombatUtils.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="GUI\Components\BoolToValueConverter.cs" />
