@@ -14,7 +14,7 @@ namespace SenseiSkills
 {
     static class CombatUtils
     {
-        private static ILog Log = LogManager.GetLogger("[SenseiSkills]");
+        private static ILog Log = LogManager.GetLogger("[SenseiSkills][CombatUtils]");
 
         public static List<Effect> getNpcEffects(Actor target)
         {
