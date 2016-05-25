@@ -32,6 +32,8 @@ namespace SenseiSkills.CombatHandler
             {
                 Log.Info("Combat Called===============");
 
+                
+
                 System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
                 if (await decideNextSkill() == false)
                 {
@@ -93,7 +95,12 @@ namespace SenseiSkills.CombatHandler
                 Log.Info("Checking current target...");
                 target = GameManager.LocalPlayer.CurrentTarget;
 
-
+                if (CombatUtils.validateTarget(target))
+                { }
+                else
+                {
+                    return false;
+                }
 
                 Log.Info("Killing " + target.Name + " Dis:" + (target.Distance / 50));
                 Log.InfoFormat("Creature Type: " + target.CreatureType);
@@ -501,15 +508,25 @@ namespace SenseiSkills.CombatHandler
                  {
                      target = GameManager.LocalPlayer.CurrentTarget;
 
+
+
                      if (target == null)
                      {
                          target = CombatUtils.closestEnemy(true);
-                          CombatUtils.TurnToActor(target);
+                       
                      }
 
 
+                    if (CombatUtils.validateTarget(target))
+                    { }
+                    else
+                    {
+                         return;
+                    }
 
-                     Log.Info("Init Combat to " + target.Name + " Dis:" + (target.Distance / 50));
+                    CombatUtils.TurnToActor(target);
+
+                    Log.Info("Init Combat to " + target.Name + " Dis:" + (target.Distance / 50));
 
                      if (target != null && (target.Distance / 50) < profile.gapCloseRange)
                      {

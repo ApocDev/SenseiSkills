@@ -268,7 +268,7 @@ namespace SenseiSkills
                         //Log.Info("Target Action " + targetAction.Dump());
 
                         var skill = GameManager.LocalPlayer.GetSkillByName(skillName);
-                        int channelTime = skill.Record.ExecDuration1;
+                        int channelTime = skill.Record.PassiveSkill.ExecDuration1;
 
 
                         Log.InfoFormat("Skil Channel Time  {0}>= than skill remaining time {1}", channelTime, targetAction.TimeLeft.Milliseconds);
@@ -294,6 +294,19 @@ namespace SenseiSkills
             // }
             return false; //we are good for the time being.
 
+
+        }
+
+
+        public static bool validateTarget(Actor actor)
+        {
+            if (actor != null && actor.IsValid && actor.HealthPercent > 0)
+            {
+                Log.InfoFormat("Actor {0} is valid and alive",actor.Name);
+                return true;
+            }
+            else
+                return false;
 
         }
 
@@ -356,6 +369,12 @@ namespace SenseiSkills
             try
             {
 
+                if (validateTarget(GameManager.LocalPlayer))
+                { }
+                else
+                {
+                    return false;
+                }
 
                 var skl = GameManager.LocalPlayer.GetSkillByName(skill.skillName);
                 if (skl == null)
