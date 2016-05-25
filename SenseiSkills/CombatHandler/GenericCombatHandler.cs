@@ -356,9 +356,14 @@ namespace SenseiSkills.CombatHandler
             {
                 var skill = GameManager.LocalPlayer.GetSkillByName(_nextSkill.skillName);
                 var castResult = skill.ActorCanCastResult(GameManager.LocalPlayer);
-                var castResultSummon = skill.ActorCanCastResult(GameManager.SummonedMinion);
+                var castResultSummon = SkillUseError.Unknown;
 
+                if (GameManager.SummonedMinion != null && GameManager.SummonedMinion.IsValid)
+                {
+                  castResultSummon = skill.ActorCanCastResult(GameManager.SummonedMinion);
+                }
 
+               
 
 
                 Log.Info(_nextSkill.skillName + " CanCast result: " + castResult);
