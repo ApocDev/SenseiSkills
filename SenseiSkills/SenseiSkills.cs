@@ -1,30 +1,17 @@
-﻿
-using Buddy.BladeAndSoul.Game;
-using Buddy.BladeAndSoul.Game.Objects;
-using Buddy.BladeAndSoul.Infrastructure;
+﻿using Buddy.BladeAndSoul.Infrastructure;
 using Buddy.BotCommon;
 using Buddy.Engine;
 using log4net;
 using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Markup;
+
 using UserControl = System.Windows.Controls.UserControl;
-using Application = System.Windows.Application;
-using Buddy.BladeAndSoul;
-using Buddy.BladeAndSoul.ViewModels;
-using Buddy.Coroutines;
-using System.Collections.Generic;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Buddy.BladeAndSoul.Game.DataTables;
+
 using SenseiSkills.Settings;
 using SenseiSkills.CombatHandler;
 
@@ -46,7 +33,7 @@ namespace SenseiSkills
             base.OnRegistered();
 
             Log.Info("Sensei Skills Loaded");
-            String profileStr = Helper.readFromFile();
+            String profileStr = Helper.ReadFromFile();
             //profile = ((JArray)JsonConvert.DeserializeObject(profile)).ToObject<SenseiProfile>();
 
             profile = ((JObject)JsonConvert.DeserializeObject(profileStr)).ToObject<SenseiProfile>();

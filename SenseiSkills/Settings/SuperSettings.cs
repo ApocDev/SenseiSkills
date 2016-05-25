@@ -1,114 +1,88 @@
-﻿using Buddy.Common;
-using System;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows;
-using Newtonsoft.Json.Linq;
-using log4net;
-using Buddy.Common.Mvvm;
 using System.Windows.Input;
+
+using Buddy.Common;
+using Buddy.Common.Mvvm;
+
+using log4net;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SenseiSkills.Settings
 {
-    public class SuperSettings : JsonSettings, INotifyPropertyChanged
-    {
-        /// <summary>
-        /// Occurs when property changed.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-        private static ILog Log = LogManager.GetLogger("[SenseiSkills]");
-        private static SuperSettings _instance;
-        internal static SuperSettings Instance { get { return _instance ?? (_instance = new SuperSettings()); } }
-
-        public SuperSettings() : base(GetSettingsFilePath(SettingsPath, "SenseiSkills.json"))
-        {
+	public class SuperSettings : JsonSettings, INotifyPropertyChanged
+	{
+		private static readonly ILog Log = LogManager.GetLogger("[SenseiSkills]");
+		private static SuperSettings _instance;
 
 
-
-            String jsonText = Helper.readFromFile();
-
-            Log.Info("Loading Skills.txt");
-
-            Profile = ((JObject)JsonConvert.DeserializeObject(jsonText)).ToObject<SenseiProfile>();
-
-            Log.Info("Profile Loaded");
-
-            Log.Info("Got List for " + Profile.skillList.Count);
+		[JsonIgnore]
+		private ObservableCollection<ISkillLeaf> _skills;
 
 
-            Skills = Helper.jsonToTree(Profile);
+		public SuperSettings() : base(GetSettingsFilePath(SettingsPath, "SenseiSkills.json"))
+		{
+			string jsonText = Helper.ReadFromFile();
 
-            
-            DumpBackpackCommand = new RelayCommand(
-                  parameter =>
-                  {
-                      
-                          Log.Info("");
-                        
-                 });
+			Log.Info("Loading Skills.txt");
 
-        }
+			Profile = ((JObject) JsonConvert.DeserializeObject(jsonText)).ToObject<SenseiProfile>();
 
-        public ICommand DumpBackpackCommand { get; private set; }
+			Log.Info("Profile Loaded");
 
+			Log.Info("Got List for " + Profile.skillList.Count);
 
-        private SenseiProfile profile;
+			Skills = Helper.jsonToTree(Profile);
 
+			DumpBackpackCommand = new RelayCommand(
+				parameter => { Log.Info(""); });
+		}
 
-        [JsonIgnore]
-        private ObservableCollection<ISkillLeaf> _skills;
-        [JsonIgnore]
-        public ObservableCollection<ISkillLeaf> Skills
-        {
-            get
-            {
-                if (_skills == null)
-                {
-                    _skills = new ObservableCollection<ISkillLeaf>();
+		internal static SuperSettings Instance { get { return _instance ?? (_instance = new SuperSettings()); } }
 
+		public ICommand DumpBackpackCommand { get; private set; }
 
-                }
-                return _skills;
-            }
-            set
-            {
-                    _skills = value;
-                OnPropertyChanged("Skills");
-            }
-        }
+		[JsonIgnore]
+		public ObservableCollection<ISkillLeaf> Skills
+		{
+			get
+			{
+				if (_skills == null)
+				{
+					_skills = new ObservableCollection<ISkillLeaf>();
+				}
+				return _skills;
+			}
+			set
+			{
+				_skills = value;
+				OnPropertyChanged("Skills");
+			}
+		}
 
-        public SenseiProfile Profile
-        {
-            get
-            {
-                return profile;
-            }
+		public SenseiProfile Profile { get; set; }
 
-            set
-            {
-                profile = value;
-            }
-        }
+		#region INotifyPropertyChanged Members
 
+		/// <summary>
+		///     Occurs when property changed.
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        /// Called when property changed.
-        /// </summary>
-        /// <param name="propertyName">Name of the property.</param>
-        public void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+		#endregion
 
-        
-
-    }
-
-   
-   }
+		/// <summary>
+		///     Called when property changed.
+		/// </summary>
+		/// <param name="propertyName">Name of the property.</param>
+		public void OnPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+}

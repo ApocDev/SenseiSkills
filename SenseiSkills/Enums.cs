@@ -1,40 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SenseiSkills
+﻿namespace SenseiSkills
 {
-     public   enum SkillType
-        {
-            DEFAULT,
-            DPS,
-            PULL,
-            CCBREAK,
-            EVADE,
-            HEAL,
-            BLOCK
-          
-           
-        };
+	public enum SkillType
+	{
+		DEFAULT,
+		DPS,
+		PULL,
+		CCBREAK,
+		EVADE,
+		HEAL,
+		BLOCK
+	}
 
-        public  enum ConditionType
-        {
-            NONE,
-            DISTLT,
-            DISTGT,
-            STACK,
-            EFFECT,
-            DEADSUMMON,
-            STANCE,
-            DONTUSE,
-            HPLT,
-            HPGT,
-            FOCUSLT,
-            FOCUSGT,
-            SUMMONALIVE
-
-        };
-    
+	public enum ConditionType
+	{
+		NONE,
+		DISTLT,
+		DISTGT,
+		STACK,
+		EFFECT,
+		DEADSUMMON,
+		STANCE,
+		DONTUSE,
+		HPLT,
+		HPGT,
+		FOCUSLT,
+		FOCUSGT,
+		SUMMONALIVE
+	}
 }
